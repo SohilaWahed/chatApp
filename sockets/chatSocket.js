@@ -1,30 +1,45 @@
 module.exports = io => {
     io.on("connection", socket => {
-
-          socket.on("join chat", (chatId) => {
-            socket.join(chatId);
-            console.log("User Joined Room: " + chatId);
-          });
-        
-          socket.on("typing", (room) => socket.in(room).emit("typing"));
-          
-          socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
-        
-          socket.on("new message", (newMessageRecieved) => {
-            
-            //socket.to(chat.id).emit("message recieved", newMessageRecieved);
-            
-            var chat = newMessageRecieved.chat;
-        
-            if (!chat.users) return console.log("chat.users not defined");
-        
-           chat.users.forEach((user) => {
-
-              if (user._id == newMessageRecieved.sender._id) return;
-              
-              socket.in(user._id).emit("message recieved", newMessageRecieved); // server send message to reciever
-            });
-        
-          });
+      const connectedUsers = []
+      connectedUsers[socket.id] = { username: 'Guest', status: 'online' };
+      console.log(connectedUsers)
+      
+      io.emit('user list update', connectedUsers);
+    
+      // Listen for a disconnection event from the client
+      socket.on('disconnect', () => {
+        connectedUsers[socket.id].status = 'offline';
+        io.emit('user list update', connectedUsers);
+        //console.log(connectedUsers)
+        delete connectedUsers[socket.id];
+        console.log('User disconnected:', socket.id);
+      });
+    
+      // Join a chat room
+      const chatRooms = []
+      socket.on('join', (room) => {
+        socket.join(room);
+        chatRooms[room] = chatRooms[room] || [];
+        chatRooms[room].push(socket.id);
+        console.log(`User ${socket.id} joined room ${room}`);
+      });
+      
+      // Listen for a message from the client
+      socket.on('chat message', (data) => {
+        // Send the message to all sockets in the room
+        io.to(data.room).emit('chat message', data.message);
+        chatRooms[data.room].forEach((id) => {
+          if (id !== socket.id) {
+            io.to(id).emit('new message', data.message);
+          }
+        });
+      });
+      
+      // //Leave a chat room
+      // socket.on('leave', (room) => {
+      //   socket.leave(room);
+      //   chatRooms[room] = chatRooms[room].filter((id) => id !== socket.id);
+      //   console.log(`User ${socket.id} left room ${room}`);
+      // });
     })
 }

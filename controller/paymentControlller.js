@@ -10,6 +10,12 @@ exports.initiateCredit = async (req,res)=>{
     const redirectUrl = `https://portal.weaccept.co/api/acceptance/iframes/${process.env.PAYMOB_IFRAME_ID}?payment_token=${paymentToken}`;
 
     console.log("\n" + redirectUrl)
+
+    // res.status(200).json({
+    //   success: true,
+    //   data: redirectUrl
+    // })
+
     res.end(redirectUrl); //res.json
 
   }catch(error){
