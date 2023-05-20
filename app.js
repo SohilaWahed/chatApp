@@ -2,6 +2,8 @@ const morgan = require('morgan'); //library simulation middleware fn
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const chatRouter = require('./routes/chatRoutes');
+const paymentRouter = require('./routes/paymentRoutes');
+
 const messageRouter = require('./routes/messageRoutes');
 const express = require('express');
 const AppError = require('./utils/appError');
@@ -32,6 +34,8 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/chats', chatRouter);
 app.use('/api/v1/messages', messageRouter);
+app.use('/api/v1/payments', paymentRouter);
+
 
 app.all('*', (req, res, next) => {
   // return json error instead of html when unknown route

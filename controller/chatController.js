@@ -38,6 +38,7 @@ exports.deleteChat = catchAsync(async(req, res, next)=>{
 exports.accesChat = catchAsync(async(req, res, next)=>{
 
     const user = await User.findOne({_id: req.params.id})
+    
     if(!user){
       return next(new AppError('No user found with that id',404))
     }

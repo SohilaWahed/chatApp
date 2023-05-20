@@ -1,7 +1,7 @@
 module.exports = io => {
     io.on("connection", socket => {
 
-        socket.on("join chat", (chatId) => {
+          socket.on("join chat", (chatId) => {
             socket.join(chatId);
             console.log("User Joined Room: " + chatId);
           });
