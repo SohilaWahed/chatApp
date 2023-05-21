@@ -7,7 +7,4 @@ router.route('/wallet').post(PaymentController.initiateWallet)
 
 router.route('/callbackCredit').get(PaymentController.callback)
 
-
-
-
 module.exports = router

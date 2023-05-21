@@ -13,7 +13,7 @@ exports.deleteAllChats = catchAsync(async(req, res, next)=>{
     return next(new AppError('Sorry, Cannot delete chats',404))
   }
   res.status(204).json({
-    status:'sucess',
+    status:true,
     data: null
   })
 })
@@ -27,7 +27,8 @@ exports.deleteChat = catchAsync(async(req, res, next)=>{
     return next(new AppError('Sorry, No chat exist with this id ',404))
   }
   res.status(204).json({
-    status:'success',
+    status:true,
+    message:"deleted successfully",
     data: null
   })
 })
@@ -60,7 +61,8 @@ exports.accesChat = catchAsync(async(req, res, next)=>{
 
     if(isChat.length > 0){
         res.status(200).json({
-            status: 'success',
+            status: true,
+            message:" Access successfully",
             data: isChat, // must be return one chat but for sure
         }); 
     }else{
@@ -73,7 +75,8 @@ exports.accesChat = catchAsync(async(req, res, next)=>{
             const newChat = await Chat.create(chat);
             const fullChat = await Chat.find({_id: newChat._id}).populate("users","-password")
             res.status(200).json({
-                status: 'success',
+                status: true,
+                message:"chat creatad successfully",
                 data: fullChat, 
             }); 
         }catch(err){
@@ -108,12 +111,12 @@ exports.allChats = catchAsync(async(req, res, next)=>{
         return next(new AppError("Not Found Chats",404))
     }
     res.status(200).json({
-        status: 'success',
-        results: chats.length,
+        status: true,
+        message:"All chat sent successfully",
         data: chats
     }); 
 })
-
+/***********************************************************/
 //@description     Create New Group Chat
 //@route           POST /api/v1/chat/group
 //@access          Protected

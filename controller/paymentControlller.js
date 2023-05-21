@@ -11,11 +11,6 @@ exports.initiateCredit = async (req,res)=>{
 
     console.log("\n" + redirectUrl)
 
-    // res.status(200).json({
-    //   success: true,
-    //   data: redirectUrl
-    // })
-
     res.end(redirectUrl); //res.json
 
   }catch(error){
@@ -25,12 +20,11 @@ exports.initiateCredit = async (req,res)=>{
 
 exports.initiateWallet =  async (req, res)=> {
   try {
-    const token = await getAuthToken();
+    const token = await getToken();
     const order = await createOrder(token);
     const paymentToken = await getPaymentToken(order.id, token);
     const payWalletData = await payWallet(paymentToken)
-    console.log(payWalletData.redirection_url)
-    res.redirect(payWalletData.redirection_url);
+    console.log(payWalletData)
   } catch (error) {
     console.log(error);
   }
@@ -183,6 +177,40 @@ const getPaymentToken = async (order, token)=> {
     }
         console.log(error.config);
   }
+}
+
+
+const payWallet = async ( getPaymentToken)=>{
+
+  dataBody = {
+    "source": {
+      "identifier": "wallet mobile number", 
+      "subtype": "WALLET"
+    },
+    "payment_token": getPaymentToken  // token obtained in step 3
+  }
+  
+  try{
+
+    const result = await axios.post(' https://accept.paymob.com/api/acceptance/payments/pay', dataBody ,{
+    headers: {
+      'Content-Type': 'application/json'
+    }})
+
+    return result
+
+  }catch(error){
+    if (error.response) { // the server returned an error status code
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+    } else if (error.request) { // request was sent but no response was received
+        console.log(error.request);
+    } else {
+        console.log('Error', error.message);
+    }
+        console.log(error.config);
+  }     
 }
 
 // when press pay send to paymob and return with data 

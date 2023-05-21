@@ -29,7 +29,8 @@ exports.getDataUpdate = catchAsync( async (req, res, next) => {
   const user = await User.findById(req.user.id) //EXECUTE data
   
   res.status(200).json({
-    status: 'success',
+    status: true,
+    message:"data sent succefully",
     data: {
       name:user.name,
       email:user.email,
@@ -48,7 +49,8 @@ exports.updateMe = catchAsync(async(req,res,next)=>{
     runValidators:true
   })
   res.status(200).json({
-    status:'success',
+    status:true,
+    message:"update successfully",
     data:{
       user:updateUser
     }
@@ -59,7 +61,8 @@ exports.updateMe = catchAsync(async(req,res,next)=>{
 exports.deleteMe = catchAsync(async(req,res,next)=>{
   await User.findByIdAndUpdate(req.user.id,{active:false})
   res.status(204).json({
-    status:'sucess',
+    status:true,
+    message:"deleted successfully",
     data:null
   })
 })
@@ -69,7 +72,7 @@ exports.getAllDeletedUser = catchAsync( async (req, res, next) => {
   const users = await User.findOne({active: false}) //EXECUTE data
 
   res.status(200).json({
-    status: 'success',
+    status: true,
     results: users.length,
     data: {
       users

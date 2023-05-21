@@ -28,6 +28,7 @@ router.route('/:id').post(authController.protect,chatController.accesChat)
 router.route('/').get(authController.protect,chatController.allChats)
 router.route('/').delete(authController.protect,chatController.deleteAllChats)
 router.route('/:id').delete(authController.protect,chatController.deleteChat)
+
 router.route('/group').post(authController.protect,chatController.createGroupChat)
 router.route('/rename').put(authController.protect,chatController.renameGroup) 
 router.route('/groupremove').put(authController.protect,chatController.removeFromGroup)
