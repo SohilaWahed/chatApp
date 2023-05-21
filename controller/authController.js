@@ -197,6 +197,25 @@ exports.logOut=catchAsync(async(req,res,next) => {
  })
  });
 
+ exports.updatePassword=catchAsync(async(req,res,next)=>{ //settings  hy48lha b3d el protect
+  // get user from collection 
+    const user =await User.findById(req.user.id).select('+password')
+    
+    if(!user){
+      return next(new AppError(" there's no user with that token",404))
+    }
+  // check if posted current password is correct
+    if(!(await user.correctPassword(req.body.currentPassword,user.password))){
+      return next(new AppError("Current password isn't correct",400))
+    }
+  // if true, update password 
+    user.password=req.body.newPassword
+    user.passwordConfirm=req.body.newPasswordConfirm
+    await user.save({validateBeforeSave:false})
+  // log user in, send JWT
+  createSendToken(user, 200,"password has changed successfully", res);
+})
+
 /*************************************************************/
 exports.resetPassswordOtpJ = catchAsync(async (req, res, next) => {
   const hashToken = crypto
