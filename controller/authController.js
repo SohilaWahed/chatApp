@@ -12,7 +12,7 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode,message, res) => {
   const token = signToken(user._id);
   const cookiOption = {
     expires: new Date(
@@ -23,7 +23,7 @@ const createSendToken = (user, statusCode, res) => {
   if (process.env.NODE_ENV === 'production') {
     cookiOption.secure = true;
   }
-  res.cookie('jwt', token, cookiOption);
+  res.cookie('jwt', token, cookiOption)
   user.password = undefined; //disable pass in req
   res.status(statusCode).json({
     status:true,
